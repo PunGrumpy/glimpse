@@ -2,6 +2,7 @@
   "name": "glimpse",
   "version": "0.1.0",
   "private": true,
+  "description": "View public Instagram profiles, posts, reels and stories without an account.",
   "type": "module",
   "scripts": {
     "dev": "next dev",
