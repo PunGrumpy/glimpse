@@ -34,7 +34,9 @@ export const SearchForm = ({
     event.preventDefault();
     const parsed = parseInput(value);
     if (!parsed) {
-      setError("Enter a username like @natgeo, or paste a post or reel link.");
+      setError(
+        "Enter a username like @instagram, or paste a post or reel link."
+      );
       return;
     }
     setError(null);

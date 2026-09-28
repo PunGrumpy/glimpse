@@ -67,7 +67,7 @@ const ProductPreview = () => (
           <span className="size-2.5 rounded-full bg-[#febc2e]" />
           <span className="size-2.5 rounded-full bg-[#28c840]" />
           <span className="bg-sand-50 text-ink/45 mx-auto h-5 w-56 rounded-md text-center font-mono text-[10.5px] leading-5">
-            peek.app/natgeo
+            glimpse.app/username
           </span>
         </div>
         <div className="px-6 pt-8 sm:px-16">
@@ -200,7 +200,7 @@ export const Hero = () => {
                 href="#how"
                 className="pressable group border-line-strong hover:bg-sand-50 inline-flex h-[42px] items-center gap-2.5 rounded-[10px] border bg-white pr-2.5 pl-5 text-[15px]"
               >
-                See how Peek works
+                See how Glimpse works
                 <span className="bg-sand-100 text-ink group-hover:bg-line grid size-6 place-items-center rounded-full">
                   <ArrowDownIcon
                     className="size-3.5 opacity-65 group-hover:opacity-100"

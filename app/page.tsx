@@ -53,7 +53,7 @@ const FEATURES = [
 
 const FAQ = [
   {
-    a: "No. Peek shows public profiles, posts and reels without signing in.",
+    a: "No. Glimpse shows public profiles, posts and reels without signing in.",
     q: "Do I need an Instagram account?",
   },
   {
@@ -61,7 +61,7 @@ const FAQ = [
     q: "Will the person know I viewed their profile?",
   },
   {
-    a: "Only accounts you already follow. Connect your own Instagram session and Peek shows exactly what your account is allowed to see, nothing more.",
+    a: "Only accounts you already follow. Connect your own Instagram session and Glimpse shows exactly what your account is allowed to see, nothing more.",
     q: "Can I see private accounts?",
   },
   {

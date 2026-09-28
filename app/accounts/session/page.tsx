@@ -71,7 +71,7 @@ const SessionPage = async () => {
         </h1>
         <p className="text-ink/75 font-serif text-[17px] leading-[1.5] font-light">
           Connect your Instagram session to view private accounts you follow,
-          plus stories and highlights. Peek never shows anything your account
+          plus stories and highlights. Glimpse never shows anything your account
           isn&apos;t already allowed to see.
         </p>
       </header>
@@ -102,10 +102,10 @@ const SessionPage = async () => {
         <div className="flex flex-col gap-2">
           <p className="font-medium">A sessionid is a key to your account.</p>
           <p className="text-ink/75">
-            Anyone holding it can act as you until you log out. Peek keeps it
+            Anyone holding it can act as you until you log out. Glimpse keeps it
             only in an httpOnly cookie in this browser, sends it to Instagram
             for your requests, and never stores or logs it. Disconnect removes
-            it from Peek; to revoke it everywhere, log out of that session on
+            it from Glimpse; to revoke it everywhere, log out of that session on
             Instagram. Automated access is against Instagram&apos;s terms, so
             use a secondary account.
           </p>

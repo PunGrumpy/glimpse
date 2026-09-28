@@ -18,8 +18,8 @@ export const metadata: Metadata = {
   description:
     "View public Instagram profiles, posts and reels anonymously. No account, no login, no tracking.",
   title: {
-    default: "Peek — view Instagram without an account",
-    template: "%s · Peek",
+    default: "Glimpse — view Instagram without an account",
+    template: "%s · Glimpse",
   },
 };
 

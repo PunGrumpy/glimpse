@@ -13,7 +13,7 @@ import "server-only";
  * Automated use is against Instagram's terms; use secondary accounts.
  */
 
-export const VISITOR_COOKIE = "peek_ig_session";
+export const VISITOR_COOKIE = "glimpse_ig_session";
 
 // "<numeric user id>%3A<token>…" (URL-encoded) or with a literal colon.
 const SESSION_ID = /^(?<userId>\d{1,20})(?:%3A|:)[\w%:.-]{8,300}$/u;
