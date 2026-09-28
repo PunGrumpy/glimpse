@@ -4,6 +4,7 @@ import { Geist, Geist_Mono, Source_Serif_4 } from "next/font/google";
 import "./globals.css";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
+import { ToastProvider } from "@/components/ui/toast";
 import { cn } from "@/lib/utils";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
@@ -49,9 +50,11 @@ const RootLayout = ({ children }: LayoutProps<"/">) => (
     )}
   >
     <body className="text-ink flex min-h-full flex-col">
-      <SiteHeader />
-      <main className="flex-1">{children}</main>
-      <SiteFooter />
+      <ToastProvider position="bottom-center">
+        <SiteHeader />
+        <main className="flex-1">{children}</main>
+        <SiteFooter />
+      </ToastProvider>
     </body>
   </html>
 );

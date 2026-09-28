@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { Logo } from "@/components/logo";
+import { LogoMenu } from "@/components/logo-menu";
 
 const NAV = [
   { href: "/#how", label: "How it works" },
@@ -13,7 +13,7 @@ export const SiteHeader = () => (
   <header className="sticky top-0 z-50 bg-white">
     <div className="mx-auto flex h-[68px] items-center justify-between gap-4 px-5 lg:h-[76px] lg:px-8">
       <div className="flex items-center gap-3 xl:gap-6">
-        <Logo />
+        <LogoMenu />
         <nav className="hidden items-center gap-0.5 md:flex">
           {NAV.map((item) => (
             <Link
