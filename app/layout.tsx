@@ -14,13 +14,26 @@ const sourceSerif = Source_Serif_4({
   weight: ["300", "400"],
 });
 
+const DESCRIPTION =
+  "View public Instagram profiles, posts, reels and stories anonymously. No account, no login, no tracking.";
+
 export const metadata: Metadata = {
-  description:
-    "View public Instagram profiles, posts and reels anonymously. No account, no login, no tracking.",
+  applicationName: "Glimpse",
+  description: DESCRIPTION,
+  // Makes the generated opengraph-image URL absolute for link previews.
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"
+  ),
+  openGraph: {
+    description: DESCRIPTION,
+    siteName: "Glimpse",
+    type: "website",
+  },
   title: {
     default: "Glimpse — view Instagram without an account",
     template: "%s · Glimpse",
   },
+  twitter: { card: "summary_large_image" },
 };
 
 const RootLayout = ({ children }: LayoutProps<"/">) => (
