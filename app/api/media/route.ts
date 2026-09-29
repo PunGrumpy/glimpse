@@ -1,6 +1,6 @@
 import type { NextRequest } from "next/server";
 
-import { isProxiedHost } from "@/lib/media";
+import { decodeMediaUrl, isProxiedHost } from "@/lib/media";
 
 const PASSTHROUGH = [
   "accept-ranges",
@@ -13,7 +13,8 @@ const PASSTHROUGH = [
 const UNSAFE_FILENAME_CHARS = /[^\w.-]/gu;
 const PARTIAL_CONTENT = 206;
 
-const parseTarget = (raw: string | null): URL | null => {
+const parseTarget = (encoded: string | null): URL | null => {
+  const raw = encoded ? decodeMediaUrl(encoded) : null;
   try {
     return new URL(raw ?? "");
   } catch {
@@ -31,7 +32,7 @@ const isAllowed = (target: URL, download: string | null): boolean => {
 };
 
 const proxyMedia = async (request: NextRequest): Promise<Response> => {
-  const target = parseTarget(request.nextUrl.searchParams.get("url"));
+  const target = parseTarget(request.nextUrl.searchParams.get("u"));
   const download = request.nextUrl.searchParams.get("download");
   if (!target) {
     return new Response("Invalid url", { status: 400 });
@@ -46,7 +47,7 @@ const proxyMedia = async (request: NextRequest): Promise<Response> => {
     headers: range ? { Range: range } : undefined,
   });
   if (!upstream.ok && upstream.status !== PARTIAL_CONTENT) {
-    return new Response("Upstream error", {
+    return new Response(`Upstream error ${upstream.status}`, {
       status: upstream.status === 404 ? 404 : 502,
     });
   }
