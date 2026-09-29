@@ -1,8 +1,8 @@
 import "server-only";
-import type { Response as UndiciResponse } from "undici";
 import type { z } from "zod";
 
-import { igFetch } from "../http";
+import { igFetch, supportsHttp2 } from "../http";
+import type { IgResponse } from "../http";
 import {
   gqlEnvelope,
   MediaInfoSchema,
@@ -210,10 +210,7 @@ const throwForStatus = (status: number): never => {
   throw new InstagramError("upstream", `Instagram responded ${status}`);
 };
 
-const parseBody = async <T extends z.ZodType>(
-  res: UndiciResponse,
-  schema: T
-) => {
+const parseBody = async <T extends z.ZodType>(res: IgResponse, schema: T) => {
   try {
     return schema.safeParse(await res.json());
   } catch {
@@ -223,7 +220,7 @@ const parseBody = async <T extends z.ZodType>(
 };
 
 const readJson = async <T extends z.ZodType>(
-  res: UndiciResponse,
+  res: IgResponse,
   schema: T
 ): Promise<z.infer<T>> => {
   const parsed = await parseBody(res, schema);
@@ -415,10 +412,11 @@ const USER_ID = /"user_id":"(?<pk>\d+)"/u;
 
 /**
  * Why we are on the GraphQL path. The crawler page looks the same for hidden
- * and nonexistent accounts, so a missing pk only means "not found" when REST
- * already confirmed the account exists (the 400 business-account bug).
+ * and nonexistent accounts. While throttled a missing pk is reported as
+ * "try again", since REST will soon give the real answer; otherwise (the 400
+ * business-account bug, or no HTTP/2 on Workers) it means "not found".
  */
-type FallbackReason = "rest-unavailable" | "throttled";
+type FallbackReason = "rest-unavailable" | "throttled" | "no-http2";
 
 // The pk isn't exposed without login except in the page served to crawlers.
 const findProfilePk = async (
@@ -514,6 +512,10 @@ const getProfile = async (
   username: string,
   session: InstagramSession | null
 ): Promise<Profile> => {
+  // REST 429s without HTTP/2, so runtimes without it go straight to GraphQL.
+  if (!(session || supportsHttp2)) {
+    return getProfileGraphql(username, "no-http2");
+  }
   // Logged-in requests always need REST: the GraphQL fallback is logged-out only.
   if (!session && Date.now() < restBlockedUntil) {
     return getProfileGraphql(username, "throttled");
