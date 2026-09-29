@@ -1,7 +1,7 @@
 import "server-only";
 import type { z } from "zod";
 
-import { igFetch, supportsHttp2 } from "../http";
+import { igFetch } from "../http";
 import type { IgResponse } from "../http";
 import {
   gqlEnvelope,
@@ -415,9 +415,9 @@ const LOGIN_REDIRECT = /\/accounts\/login/u;
  * Why we are on the GraphQL path. The crawler page looks the same for hidden
  * and nonexistent accounts. While throttled a missing pk is reported as
  * "try again", since REST will soon give the real answer; otherwise (the 400
- * business-account bug, or no HTTP/2 on Workers) it means "not found".
+ * business-account bug) it means "not found".
  */
-type FallbackReason = "rest-unavailable" | "throttled" | "no-http2";
+type FallbackReason = "rest-unavailable" | "throttled";
 
 // The pk isn't exposed without login except in the page served to crawlers.
 const findProfilePk = async (
@@ -522,10 +522,6 @@ const getProfile = async (
   username: string,
   session: InstagramSession | null
 ): Promise<Profile> => {
-  // REST 429s without HTTP/2, so runtimes without it go straight to GraphQL.
-  if (!(session || supportsHttp2)) {
-    return getProfileGraphql(username, "no-http2");
-  }
   // Logged-in requests always need REST: the GraphQL fallback is logged-out only.
   if (!session && Date.now() < restBlockedUntil) {
     return getProfileGraphql(username, "throttled");

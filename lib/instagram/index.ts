@@ -101,6 +101,31 @@ const getHiddenProfile = (
   );
 };
 
+/** A profile as a logged-out visitor sees it: private accounts show no media. */
+const withoutPrivateMedia = (profile: Profile): Profile =>
+  profile.isPrivate
+    ? { ...profile, highlights: [], posts: [], reels: [] }
+    : profile;
+
+/**
+ * Instagram throttles logged-out requests per IP, which on shared egress
+ * (Cloudflare Workers) is nearly all the time. The service account is limited
+ * per account instead, so it stands in for the logged-out lookup. Whatever it
+ * follows stays hidden: the result is trimmed to the logged-out view.
+ */
+const getThrottledProfile = (username: string): Promise<Profile> => {
+  const service = getServiceSession();
+  if (!service) {
+    throw new InstagramError(
+      "rate_limited",
+      "Instagram is rate limiting requests"
+    );
+  }
+  return profileCache(username, async () =>
+    withoutPrivateMedia(await provider.getProfile(username, service))
+  );
+};
+
 const loadProfile = async (
   username: string,
   visitor: InstagramSession | null
@@ -111,10 +136,16 @@ const loadProfile = async (
       provider.getProfile(username, null)
     );
   } catch (error) {
-    if (error instanceof InstagramError && error.code === "restricted") {
+    if (!(error instanceof InstagramError)) {
+      throw error;
+    }
+    if (error.code === "restricted") {
       return getHiddenProfile(username, visitor);
     }
-    throw error;
+    if (error.code !== "rate_limited") {
+      throw error;
+    }
+    profile = await getThrottledProfile(username);
   }
   // Private posts come back only for a session that follows the account, and
   // only the visitor's own session: never the service account's.
