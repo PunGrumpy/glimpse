@@ -409,6 +409,7 @@ const parseOgPostCount = (html: string): number | null => {
 };
 
 const USER_ID = /"user_id":"(?<pk>\d+)"/u;
+const LOGIN_REDIRECT = /\/accounts\/login/u;
 
 /**
  * Why we are on the GraphQL path. The crawler page looks the same for hidden
@@ -431,8 +432,17 @@ const findProfilePk = async (
         "User-Agent":
           "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
       },
+      redirect: "manual",
     }
   );
+  // A throttled IP (e.g. shared Cloudflare egress) gets bounced to the login
+  // page instead of the profile, which says nothing about the account itself.
+  if (LOGIN_REDIRECT.test(res.headers.get("location") ?? "")) {
+    throw new InstagramError(
+      "rate_limited",
+      "Instagram redirected the profile page to login"
+    );
+  }
   if (!res.ok) {
     throwForStatus(res.status);
   }

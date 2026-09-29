@@ -18,10 +18,13 @@ export interface IgRequestInit {
   method?: "GET" | "POST";
   headers?: Record<string, string>;
   body?: URLSearchParams;
+  redirect?: "follow" | "manual";
 }
 
 /** The parts of a response callers read; satisfied by both fetch flavours. */
-export type IgResponse = Pick<Response, "ok" | "status" | "json" | "text">;
+export type IgResponse = Pick<Response, "ok" | "status" | "json" | "text"> & {
+  headers: Pick<Headers, "get">;
+};
 
 let agent: Agent | undefined;
 
