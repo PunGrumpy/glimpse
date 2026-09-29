@@ -1,5 +1,8 @@
 allowBuilds:
+  # Cloudflare deploys: wrangler bundles with esbuild and runs workerd locally.
+  esbuild: true
   sharp: false
   unrs-resolver: false
+  workerd: true
 minimumReleaseAgeExclude:
   - ultracite@7.12.1
